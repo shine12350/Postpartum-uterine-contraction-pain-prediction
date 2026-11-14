@@ -131,7 +131,7 @@ def show_privacy_dialog():
 def main():
     st.title("Postpartum Uterine Contraction Pain Prediction")
     st.caption(
-        "Research-use tool for estimating the probability of concurrent VAS ≥ 4 pain."
+        "A research tool for estimating the probability of moderate-to-severe uterine contraction pain (VAS ≥4) following vaginal delivery, based on baseline assessment conducted within 24 hours after delivery and before the first randomized intervention."
     )
 
     if sklearn.__version__ != APP_SKLEARN_VERSION:
@@ -183,7 +183,6 @@ def main():
             dysmenorrhea = st.selectbox(
                 "Dysmenorrhea",
                 options=["Please select", "Yes", "No", "Unknown"],
-                help="Select Unknown if this information is unavailable.",
             )
             oxytocin = st.selectbox(
                 "Intrapartum oxytocin use",
@@ -287,7 +286,7 @@ def main():
     st.subheader("Prediction Result")
     st.metric("Predicted probability of VAS ≥ 4", f"{probability * 100:.1f}%")
     st.caption(
-        f"Locked classification threshold: {threshold:.3f} "
+        f"Classification threshold: {threshold:.3f} "
         "(development-set Youden threshold)"
     )
 
