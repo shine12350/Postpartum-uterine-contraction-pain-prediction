@@ -330,10 +330,8 @@ def main():
         st.info("Model-predicted category: VAS < 4")
 
     st.warning(
-        "The APP collects six of the model's 18 original predictors. Other predictor fields, "
-        "as well as any inputs left blank or marked 'Unknown', are imputed using statistics "
-        "learned from the development dataset through the original fitted preprocessing pipeline. "
-        "This prediction therefore includes imputed values."
+        "The APP requests six clinical predictors retained by the final Elastic Net model. "
+        "Missing or unknown values are imputed using statistics learned from the development dataset."
     )
 
     st.caption(
