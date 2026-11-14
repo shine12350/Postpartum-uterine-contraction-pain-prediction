@@ -1,0 +1,58 @@
+{
+  "model_name": "ElasticNet",
+  "predictor_columns": [
+    "age",
+    "bmi",
+    "temp",
+    "hr",
+    "sbp",
+    "dbp",
+    "gestational_age",
+    "abortion1",
+    "abortion2",
+    "total_vaginal_deliveries_2",
+    "total_vaginal_deliveries_ge3",
+    "newborn_weight",
+    "duration_of_delivery",
+    "perineal_laceration",
+    "episiotomy",
+    "dysmenorrhea",
+    "sym_back_pain",
+    "intrapartum_oxytocin_use"
+  ],
+  "continuous_predictors": [
+    "age",
+    "bmi",
+    "temp",
+    "hr",
+    "sbp",
+    "dbp",
+    "gestational_age",
+    "newborn_weight",
+    "duration_of_delivery"
+  ],
+  "categorical_predictors": [
+    "abortion1",
+    "abortion2",
+    "total_vaginal_deliveries_2",
+    "total_vaginal_deliveries_ge3",
+    "perineal_laceration",
+    "episiotomy",
+    "dysmenorrhea",
+    "sym_back_pain",
+    "intrapartum_oxytocin_use"
+  ],
+  "vas_cutoff": 4.0,
+  "selected_hyperparameters": {
+    "C": 0.46415888336127775,
+    "l1_ratio": 0.99
+  },
+  "locked_youden_threshold": 0.5712555437244411,
+  "development_crossfit_youden": 0.6484018264840183,
+  "prediction_timepoint": "First pre-intervention baseline assessment within 24 hours after vaginal delivery",
+  "random_state": 2026,
+  "n_splits": 5,
+  "n_repeats": 20,
+  "final_hyperparameter_search": "ElasticNet GridSearchCV on the complete preprocessing Pipeline",
+  "hyperparameter_selection_metric": "ROC-AUC"
+}
