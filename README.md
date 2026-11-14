@@ -29,14 +29,21 @@ The 11 non-selected predictors are not requested from the user. They remain miss
 the constructed DataFrame and are passed through the original fitted preprocessing steps.
 No preprocessing step or model parameter is refitted by the APP.
 
-Previous vaginal deliveries are encoded as:
-- 0 or 1: reference category
+Total vaginal deliveries include the current delivery and are encoded as:
+- 1: reference category (both dummy variables are 0)
 - 2: `total_vaginal_deliveries_2 = 1`
 - 3 or more: `total_vaginal_deliveries_ge3 = 1`
 
 Unknown binary responses and blank numeric inputs are passed as missing values and handled
 by the original fitted imputation steps.
 
-## Important notice
-This tool is intended for research and supportive assessment only. It must not be used
-for clinical decision-making. Do not enter personally identifiable information.
+## Intended use and privacy
+The model estimates the probability of concurrent moderate-to-severe uterine contraction pain
+(VAS >= 4) at baseline, using data collected within 24 hours after vaginal delivery and before
+the first randomized intervention. Predictions are for reference only and must not be used for
+clinical decision-making, diagnosis, or treatment recommendations.
+
+The authors do not collect or retain information entered into the application, and user inputs
+are not used for model retraining. The app is hosted on a third-party cloud platform, which may
+process standard technical logs or metadata under its own privacy policy. Do not enter personally
+identifiable information.

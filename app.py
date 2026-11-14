@@ -99,7 +99,7 @@ def build_model_input(bundle, deliveries, dysmenorrhea, oxytocin, newborn_weight
     row["dysmenorrhea"] = binary_value(dysmenorrhea)
     row["intrapartum_oxytocin_use"] = binary_value(oxytocin)
 
-    # The model reference category combines 0 and 1 previous vaginal deliveries.
+    # One total vaginal delivery (including the current delivery) is the model reference category.
     row["total_vaginal_deliveries_2"] = float(deliveries == 2)
     row["total_vaginal_deliveries_ge3"] = float(deliveries >= 3)
 
@@ -107,16 +107,56 @@ def build_model_input(bundle, deliveries, dysmenorrhea, oxytocin, newborn_weight
 
 
 def show_privacy_dialog():
-    @st.dialog("Privacy Statement")
+    @st.dialog("Privacy Statement and Intended Use")
     def _privacy_dialog():
         st.write(
-            "This tool is intended for research and supportive assessment only "
-            "and must not be used for clinical decision-making."
+            "The model was developed to estimate the probability of moderate-to-severe "
+            "uterine contraction pain (VAS ≥4) at the time of baseline assessment, using "
+            "data collected within 24 hours after vaginal delivery and before the first "
+            "randomized intervention."
+        )
+        st.write(
+            "The development cohort consisted of adults aged 18 years or older with "
+            "singleton live births at 37–42 weeks of gestation following vaginal delivery."
+        )
+        st.write(
+            "Predictions are for reference only and should be interpreted with caution. "
+            "They must not be used for clinical decision-making, diagnosis, or treatment recommendations."
+        )
+        st.write(
+            "The authors do not collect or retain information entered into this application, "
+            "and user inputs are not used for model retraining. This application is hosted on "
+            "a third-party cloud platform, which may process standard technical logs or metadata "
+            "in accordance with its own privacy policy."
         )
         st.write(
             "Do not enter real names, medical record numbers, or any other "
             "personally identifiable information."
         )
+        with st.expander("View Full Study Eligibility Criteria"):
+            st.markdown("**Inclusion criteria**")
+            st.markdown(
+                "1. Age ≥18 years.  \n"
+                "2. Gestational age of 37–42 weeks.  \n"
+                "3. Singleton live birth.  \n"
+                "4. Vaginal delivery.  \n"
+                "5. Intention to breastfeed.  \n"
+                "6. Ability to understand the study procedures, comply with the intervention "
+                "and follow-up assessments, and provide written informed consent."
+            )
+            st.markdown("**Exclusion criteria**")
+            st.markdown(
+                "1. Instrumental vaginal delivery, including vacuum extraction or forceps delivery.  \n"
+                "2. Severe pregnancy-related or puerperal complications.  \n"
+                "3. Pre-existing pelvic pathologies, such as adenomyosis or pelvic inflammatory disease.  \n"
+                "4. Significant central nervous system disorders, such as epilepsy.  \n"
+                "5. Rheumatic immune diseases, coagulation defects, or other serious medical and surgical conditions.  \n"
+                "6. Psychiatric conditions, such as schizophrenia or mania, that could impair communication and comprehension.  \n"
+                "7. A history of chronic analgesic dependency.  \n"
+                "8. Concurrent enrollment in other clinical trials.  \n"
+                "9. Intervention-related contraindications, including hypersensitivity to acupuncture or NSAIDs, "
+                "local skin lesions at needling sites, and active gastrointestinal conditions such as peptic ulcers or bleeding."
+            )
         if st.button(
             "I have read and agree",
             type="primary",
@@ -173,13 +213,10 @@ def main():
 
         with left:
             deliveries = st.selectbox(
-                "Total previous vaginal deliveries",
-                options=["Please select"] + list(range(0, 11)),
-                help=(
-                    "Enter an integer from 0 to 10. Values 0 and 1 form the model "
-                    "reference category."
-                ),
+                "Total vaginal deliveries (including current delivery)",
+                options=["Please select"] + list(range(1, 11)),
             )
+            st.caption("Enter an integer from 1 to 10.")
             dysmenorrhea = st.selectbox(
                 "Dysmenorrhea",
                 options=["Please select", "Yes", "No", "Unknown"],
@@ -187,10 +224,11 @@ def main():
             oxytocin = st.selectbox(
                 "Intrapartum oxytocin use",
                 options=["Please select", "Yes", "No", "Unknown"],
-                help=(
-                    "Refers to oxytocin administered during labor, not routine "
-                    "postpartum oxytocin."
-                ),
+            )
+            st.caption(
+                "Refers to oxytocin administered during labor, not routine postpartum oxytocin. "
+                "Please check the delivery record or medication orders. Select 'Unknown' if the "
+                "information is unavailable."
             )
 
         with right:
@@ -198,25 +236,21 @@ def main():
                 "Newborn weight (kg)",
                 value="",
                 placeholder="e.g., 3.25",
-                help=(
-                    "Enter the recorded birth weight in kilograms. Leave blank if unavailable."
-                ),
             )
+            st.caption("Example: 3.25 kg. Please refer to the birth record.")
             duration_text = st.text_input(
                 "Duration of delivery (min)",
                 value="",
                 placeholder="e.g., 360",
-                help=(
-                    "Enter the recorded duration in minutes. Leave blank if unavailable."
-                ),
             )
+            st.caption("Example: 360 min. Please refer to the delivery record.")
             episiotomy = st.selectbox(
                 "Episiotomy",
                 options=["Please select", "Yes", "No", "Unknown"],
-                help=(
-                    "Select Yes only if an episiotomy was performed. Do not confuse "
-                    "an episiotomy with a spontaneous perineal tear."
-                ),
+            )
+            st.caption(
+                "Please check the delivery record to confirm. Do not confuse a spontaneous "
+                "perineal tear with an episiotomy. Select 'Unknown' if the information is unavailable."
             )
 
         submitted = st.form_submit_button(
@@ -229,7 +263,7 @@ def main():
         return
 
     required_choices = {
-        "Total previous vaginal deliveries": deliveries,
+        "Total vaginal deliveries (including current delivery)": deliveries,
         "Dysmenorrhea": dysmenorrhea,
         "Intrapartum oxytocin use": oxytocin,
         "Episiotomy": episiotomy,
@@ -295,13 +329,12 @@ def main():
     else:
         st.info("Model-predicted category: VAS < 4")
 
-    if missing_inputs:
-        st.warning(
-            "Missing information was detected for: "
-            + ", ".join(missing_inputs)
-            + ". These values were imputed using statistics learned from the "
-            "development dataset through the original fitted preprocessing pipeline."
-        )
+    st.warning(
+        "The APP collects six of the model's 18 original predictors. Other predictor fields, "
+        "as well as any inputs left blank or marked 'Unknown', are imputed using statistics "
+        "learned from the development dataset through the original fitted preprocessing pipeline. "
+        "This prediction therefore includes imputed values."
+    )
 
     st.caption(
         "This output is a model-based research classification, not a diagnosis, "
