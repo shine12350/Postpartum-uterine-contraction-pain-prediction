@@ -212,21 +212,30 @@ def main():
         left, right = st.columns(2)
 
         with left:
-            deliveries = st.selectbox(
+            deliveries = st.number_input(
                 "Total vaginal deliveries (including current delivery)",
-                options=["Please select"] + list(range(1, 11)),
-            filter_mode=None,
+                min_value=1,
+                max_value=10,
+                value=None,
+                step=1,
+                format="%d",
+                placeholder="Enter an integer from 1 to 10",
+                width="stretch",
             )
             st.caption("Enter an integer from 1 to 10.")
-            dysmenorrhea = st.selectbox(
+            dysmenorrhea = st.pills(
                 "Dysmenorrhea",
-                options=["Please select", "Yes", "No", "Unknown"],
-            filter_mode=None,
+                options=["Yes", "No", "Unknown"],
+                selection_mode="single",
+                default=None,
+                width="stretch",
             )
-            oxytocin = st.selectbox(
+            oxytocin = st.pills(
                 "Intrapartum oxytocin use",
-                options=["Please select", "Yes", "No", "Unknown"],
-            filter_mode=None,
+                options=["Yes", "No", "Unknown"],
+                selection_mode="single",
+                default=None,
+                width="stretch",
             )
             st.caption(
                 "Refers to oxytocin administered during labor, not routine postpartum oxytocin. "
@@ -247,10 +256,12 @@ def main():
                 placeholder="e.g., 360",
             )
             st.caption("Example: 360 min. Please refer to the delivery record.")
-            episiotomy = st.selectbox(
+            episiotomy = st.pills(
                 "Episiotomy",
-                options=["Please select", "Yes", "No", "Unknown"],
-            filter_mode=None,
+                options=["Yes", "No", "Unknown"],
+                selection_mode="single",
+                default=None,
+                width="stretch",
             )
             st.caption(
                 "Please check the delivery record to confirm. Do not confuse a spontaneous "
@@ -274,7 +285,7 @@ def main():
     }
     incomplete = [
         name for name, value in required_choices.items()
-        if value == "Please select"
+        if value is None
     ]
     if incomplete:
         st.error("Please complete the following fields: " + ", ".join(incomplete) + ".")
