@@ -215,15 +215,18 @@ def main():
             deliveries = st.selectbox(
                 "Total vaginal deliveries (including current delivery)",
                 options=["Please select"] + list(range(1, 11)),
+            filter_mode=None,
             )
             st.caption("Enter an integer from 1 to 10.")
             dysmenorrhea = st.selectbox(
                 "Dysmenorrhea",
                 options=["Please select", "Yes", "No", "Unknown"],
+            filter_mode=None,
             )
             oxytocin = st.selectbox(
                 "Intrapartum oxytocin use",
                 options=["Please select", "Yes", "No", "Unknown"],
+            filter_mode=None,
             )
             st.caption(
                 "Refers to oxytocin administered during labor, not routine postpartum oxytocin. "
@@ -247,6 +250,7 @@ def main():
             episiotomy = st.selectbox(
                 "Episiotomy",
                 options=["Please select", "Yes", "No", "Unknown"],
+            filter_mode=None,
             )
             st.caption(
                 "Please check the delivery record to confirm. Do not confuse a spontaneous "
